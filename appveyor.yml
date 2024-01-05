@@ -9,7 +9,7 @@ branches:
 skip_tags: true
 
 environment:
-  nodejs_version: "4.4.3"
+  nodejs_version: '16.14.2'
 
 cache:
   - node_modules -> package.json
