@@ -14,73 +14,66 @@ extension to help you inspect, monitor, and debug your app.
 
 ## Features
 
-  * **Require graph** to help you visualize your app's internal and external
-    library dependencies in both the main and renderer processes.
-  * **IPC monitor** to track and inspect the messages sent and received
-    between the renderer and main processes in your app.
-  * **Event inspector** that shows the events and listeners that are registered
-    in your app on the core Electron APIs such as the window, the app, and the
-    processes.
-  * **App Linter** that checks your apps for possible issues and missing
-    functionality.
+  * **IPC monitor** to track and inspect the messages sent and received between the renderer and main processes in your app.
+  * **Event inspector** that shows the events and listeners that are registered in your app on the core Electron APIs such as the window, the app, and the processes.
+  * **[TBD] Require graph** to help you visualize your app's internal and external library dependencies in both the main and renderer processes.
+  * **[TBD] App Linter** that checks your apps for possible issues and missing functionality.
 
 ## Installing
 
-```sh
+```bash
+yarn add --dev devtron
+
 npm install --save-dev devtron
 ```
 
-Then execute the following from the Console tab of your running Electron app's
-developer tools:
+Then execute the following from the Console tab of your running Electron app's developer tools:
 
 ```js
-require('devtron').install()
+// ES6 (?) 
+import devtron from 'devtron';
+devtron.install();
+
+// ES5 (?) 
+require('devtron').install();
 ```
 
 You should then see a `Devtron` tab added.
 
 ## Disabled Node Integration
 
-If your application's `BrowserWindow` was created with `nodeIntegration` set
-to `false` then you will need to expose some globals via a [preload](http://electron.atom.io/docs/api/browser-window/#new-browserwindowoptions)
-script to allow Devtron access to Electron APIs:
+If your application's `BrowserWindow` was created with `nodeIntegration` set to `false` then you will need to expose some globals via a [preload](http://electron.atom.io/docs/api/browser-window/#new-browserwindowoptions) script to allow Devtron access to Electron APIs:
 
 ```js
 window.__devtron = {require: require, process: process}
 ```
 
-Then restart your application and Devtron should successfully load. You may
-want to guard this assignment with a `if (process.env.NODE_ENV === 'development')`
-check to ensure these variables aren't exposed in production.
+Then restart your application and Devtron should successfully load. You may want to guard this assignment with a `if (process.env.NODE_ENV === 'development')` check to ensure these variables aren't exposed in production.
 
 ## Developing locally
 
 ```
 git clone https://github.com/electron/devtron
 cd devtron
-npm install
-npm start
+yarn install (or npm install)
+yarn start (or npm start)
 ```
 
-This will start a process that watches and compiles the extension as files
-are modified.
+This will start a process that watches and compiles the extension as files are modified.
 
-Then open the Console tab of your Electron app and run the following with the
-path updated for the location that you've cloned devtron to:
+Then open the Console tab of your Electron app and run the following with the path updated for the location that you've cloned devtron to:
 
 ```js
 require('/Users/me/code/devtron').install()
 ```
 
-Then a Devtron tab should appear and it will now be enabled for that
-application.
+Then a Devtron tab should appear and it will now be enabled for that application.
 
 You can reload the extension by closing and reopening the dev tools.
 
 ### Running in a browser
 
-To make developing and debugging the extension easier, you can run it in a
-Chrome tab that will talk remotely to a running Electron app over HTTP.
+To make developing and debugging the extension easier, you can run it in a Chrome tab that will talk remotely to a running Electron app over HTTP.
 
 - Set the `DEVTRON_DEBUG_PATH` environment variable to the path of the cloned
   devtron repository.
@@ -93,8 +86,7 @@ Chrome tab that will talk remotely to a running Electron app over HTTP.
   > Open file:///Users/me/devtron/static/index.html to view
 
 - Then open `/Users/me/devtron/static/index.html` in Chrome
-- The page there will talk remotely to the running Electron app so you'll
-  be able to fully interact with each pane with real data.
+- The page there will talk remotely to the running Electron app so you'll be able to fully interact with each pane with real data.
   
 ### Additional Notes
 
@@ -135,7 +127,7 @@ config.externals = [
    ```
  2. Ensure that the copy target for `devtron/manifest.json` is the same folder as your compiled main process `js` file.
  3. Ensure that the copy target for the `devtron/out/browser-globals.js` is `out/browser-globals.js` relative to your compiled main process `js` file.
- 
+
 You can copy files with `copy-webpack-plugin`.
 
 ```js
