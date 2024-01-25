@@ -24,10 +24,10 @@ exports.install = () => {
 
 exports.uninstall = () => {
    if (process.type === 'renderer') {
-      console.log(`Uninstalling Devtron from ${__dirname}`);
+      console.log(`[RENDERER] Uninstalling Devtron from ${__dirname}`);
       return electron.remote.BrowserWindow.removeDevToolsExtension('devtron');
    } else if (process.type === 'browser') {
-      console.log(`Uninstalling Devtron from ${__dirname}`);
+      console.log(`[BROWSER] Uninstalling Devtron from ${__dirname}`);
       return electron.BrowserWindow.removeDevToolsExtension('devtron');
    } else {
       throw new Error('Devtron can only be uninstalled from an Electron process.');
