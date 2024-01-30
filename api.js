@@ -1,36 +1,60 @@
+/* ========================================================================== */
+// ALL REQUIRED IMPORTS
+/* ========================================================================== */
+// Electron
 const { app, session } = require('electron');
+// Packages
+// Context / Stores / Routers
+// Components / Classes / Controllers / Services
+// Assets / Constants
+// Interfaces / Models / Types
+const { type } = process;
+// Utils / Decorators / Methods / Mocks
+// Styles
 
-exports.install = () => {
+/* ========================================================================== */
+// INTERNAL HELPERS, INTERFACES & VARS
+/* ========================================================================== */
+let finalFight;
+
+const processTypes = {
+  browser: 'browser',
+  renderer: 'renderer',
+};
+
+const isBrowser = type === processTypes.browser;
+const isRenderer = type === processTypes.renderer;
+const typeName = type.toString().toUpperCase();
+
+/* ========================================================================== */
+// DEFINING THE `(UN-)INSTALLER` EXPORTS
+/* ========================================================================== */
+exports.install = devtronPath => {
+  finalFight = devtronPath;
+
+  console.debug('🚀--BLLR?: ELECTRON STUFF ->', {
+    devtronPath,
+    type,
+    session,
+    // app,
+  });
+
   app.whenReady().then(async () => {
-    if (process.type === 'renderer') {
-      console.log(`[RENDERER] Installing Devtron from ${__dirname}`);
+    const { defaultSession } = session;
+
+    console.debug('🚀--BLLR?: DEFAULT SESSION ->', {
+      defaultSession,
+    });
+
+    if (isRenderer || isBrowser) {
+      console.log(`[${typeName}] Installing Devtron from ${devtronPath}`);
 
       if (await session?.defaultSession?.getAllExtensions()?.devtron) {
-        console.debug('🚀--BLLR?: RENDERER -> EXISTING DEVTRON FOUND'); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
+        console.debug(`🚀--BLLR?: ${typeName} -> EXISTING DEVTRON FOUND`); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
         return true;
       }
 
-      console.debug(
-        '🚀--BLLR?: RENDERER -> ELECTRON SESSION ->',
-        JSON.parse(JSON.stringify(session.defaultSession)),
-      ); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
-
-      await session?.defaultSession?.loadExtension(__dirname, { allowFileAccess: true });
-      return true;
-    } else if (process.type === 'browser') {
-      console.log(`[BROWSER] Installing Devtron from ${__dirname}`);
-
-      if (await session?.defaultSession?.getAllExtensions()?.devtron) {
-        console.debug('🚀--BLLR?: BROWSER -> EXISTING DEVTRON FOUND'); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
-        return true;
-      }
-
-      console.debug(
-        '🚀--BLLR?: BROWSER -> ELECTRON SESSION ->',
-        JSON.parse(JSON.stringify(session.defaultSession)),
-      ); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
-
-      await session?.defaultSession?.loadExtension(__dirname, { allowFileAccess: true });
+      await session?.defaultSession?.loadExtension(devtronPath, { allowFileAccess: true });
       return true;
     } else {
       throw new Error('Devtron can only be installed from an Electron process.');
@@ -40,12 +64,8 @@ exports.install = () => {
 
 exports.uninstall = () => {
   app.whenReady().then(async () => {
-    if (process.type === 'renderer') {
-      console.log(`[RENDERER] Uninstalling Devtron from ${__dirname}`);
-      await session?.defaultSession?.removeExtension('devtron');
-      return true;
-    } else if (process.type === 'browser') {
-      console.log(`[BROWSER] Uninstalling Devtron from ${__dirname}`);
+    if (isRenderer || isBrowser) {
+      console.log(`[${typeName}] Uninstalling Devtron from ${finalFight}`);
       await session?.defaultSession?.removeExtension('devtron');
       return true;
     } else {
@@ -54,4 +74,4 @@ exports.uninstall = () => {
   });
 };
 
-exports.path = __dirname;
+exports.path = finalFight;
