@@ -1,7 +1,7 @@
 {
   "content_scripts": [
     {
-      "matches": ["*"],
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": ["out/browser-globals.js"]
     }
   ],
