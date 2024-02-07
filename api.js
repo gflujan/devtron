@@ -15,7 +15,7 @@ const { type } = process;
 /* ========================================================================== */
 // INTERNAL HELPERS, INTERFACES & VARS
 /* ========================================================================== */
-let finalFight;
+let devtronPath = '';
 
 const processTypes = {
   browser: 'browser',
@@ -29,8 +29,12 @@ const typeName = type.toString().toUpperCase();
 /* ========================================================================== */
 // DEFINING THE `(UN-)INSTALLER` EXPORTS
 /* ========================================================================== */
-exports.install = devtronPath => {
-  finalFight = devtronPath;
+exports.install = (locationPath = '') => {
+  if (!locationPath) {
+    throw new Error('Devtron must be supplied a path to its location.');
+  }
+
+  devtronPath = locationPath;
 
   console.debug('🚀--BLLR?: ELECTRON STUFF ->', {
     devtronPath,
@@ -65,7 +69,7 @@ exports.install = devtronPath => {
 exports.uninstall = () => {
   app.whenReady().then(async () => {
     if (isRenderer || isBrowser) {
-      console.log(`[${typeName}] Uninstalling Devtron from ${finalFight}`);
+      console.log(`[${typeName}] Uninstalling Devtron from ${devtronPath}`);
       await session?.defaultSession?.removeExtension('devtron');
       return true;
     } else {
@@ -74,4 +78,4 @@ exports.uninstall = () => {
   });
 };
 
-exports.path = finalFight;
+exports.path = devtronPath;
