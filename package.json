@@ -1,21 +1,12 @@
 {
-  "name": "devtron",
-  "version": "1.4.0",
-  "description": "Electron DevTools Extension",
-  "main": "./api.js",
-  "scripts": {
-    "prepublish": "browserify lib/*.js -o out/index.js --ignore-missing --entry lib/index.js && browserify lib/browser-globals.js -o out/browser-globals.js",
-    "start": "browserify lib/browser-globals.js -o out/browser-globals.js && watchify lib/*.js -o out/index.js --ignore-missing --entry lib/index.js --verbose",
-    "test": "mocha test/unit/*-test.js test/integration/*-test.js && standard",
-    "prepack": "check-for-leaks",
-    "prepush": "check-for-leaks"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gflujan/devtron.git"
-  },
   "author": "Kevin Sawicki",
+  "description": "Electron DevTools Extension",
+  "homepage": "https://github.com/gflujan/devtron#readme",
   "license": "MIT",
+  "main": "./api.js",
+  "name": "devtron",
+  "types": "@types/api.d.ts",
+  "version": "1.4.0",
   "bugs": {
     "url": "https://github.com/gflujan/devtron/issues"
   },
@@ -26,8 +17,29 @@
     "devtools",
     "developer tools"
   ],
-  "homepage": "https://github.com/gflujan/devtron#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gflujan/devtron.git"
+  },
+  "standard": {
+    "ignore": [
+      "/out/index.js"
+    ]
+  },
+  "scripts": {
+    "prepublish": "browserify lib/*.js -o out/index.js --ignore-missing --entry lib/index.js && browserify lib/browser-globals.js -o out/browser-globals.js",
+    "start": "browserify lib/browser-globals.js -o out/browser-globals.js && watchify lib/*.js -o out/index.js --ignore-missing --entry lib/index.js --verbose",
+    "test": "mocha test/unit/*-test.js test/integration/*-test.js && standard",
+    "prepack": "check-for-leaks",
+    "prepush": "check-for-leaks"
+  },
+  "dependencies": {
+    "accessibility-developer-tools": "^2.11.0",
+    "highlight.js": "^9.3.0",
+    "humanize-plus": "^1.8.1"
+  },
   "devDependencies": {
+    "@types/node": "^20.11.17",
     "body-parser": "^1.15.0",
     "browserify": "^13.0.0",
     "chai": "^3.5.0",
@@ -42,15 +54,5 @@
     "standard": "^6.0.8",
     "typescript": "^5.3.3",
     "watchify": "^3.7.0"
-  },
-  "dependencies": {
-    "accessibility-developer-tools": "^2.11.0",
-    "highlight.js": "^9.3.0",
-    "humanize-plus": "^1.8.1"
-  },
-  "standard": {
-    "ignore": [
-      "/out/index.js"
-    ]
   }
 }

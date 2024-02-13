@@ -8,28 +8,32 @@ const { app, session } = require('electron');
 // Components / Classes / Controllers / Services
 // Assets / Constants
 // Interfaces / Models / Types
-const { type } = process;
+// const { type } = process;
 // Utils / Decorators / Methods / Mocks
 // Styles
 
 /* ========================================================================== */
 // INTERNAL HELPERS, INTERFACES & VARS
 /* ========================================================================== */
-let devtronPath = '';
+console.debug('🚀--BLLR?: =================== START ===================');
+console.debug('🚀--BLLR?: PROCESS ->', process); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
+console.debug('🚀--BLLR?: ==================== END ====================');
 
-const processTypes = {
-  browser: 'browser',
-  renderer: 'renderer',
-};
+enum ProcessTypes {
+  Browser = 'browser',
+  Renderer = 'renderer',
+}
 
-const isBrowser = type === processTypes.browser;
-const isRenderer = type === processTypes.renderer;
+const type = 'browser' as ProcessTypes;
+const isBrowser = type === ProcessTypes.Browser;
+const isRenderer = type === ProcessTypes.Renderer;
 const typeName = type.toString().toUpperCase();
+let devtronPath = '';
 
 /* ========================================================================== */
 // DEFINING THE `(UN-)INSTALLER` EXPORTS
 /* ========================================================================== */
-exports.install = (locationPath = '') => {
+exports.install = (locationPath?: string): void => {
   if (!locationPath) {
     throw new Error('Devtron must be supplied a path to its location.');
   }
@@ -66,7 +70,7 @@ exports.install = (locationPath = '') => {
   });
 };
 
-exports.uninstall = () => {
+exports.uninstall = (): void => {
   app.whenReady().then(async () => {
     if (isRenderer || isBrowser) {
       console.log(`[${typeName}] Uninstalling Devtron from ${devtronPath}`);

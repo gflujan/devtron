@@ -11,7 +11,7 @@ declare class IpcView extends View {
     openDocs(): void;
     clear(): void;
     addNewEvents(): void;
-    timeoutId: number;
+    timeoutId: NodeJS.Timeout;
     addEvent(event: any): void;
     filterIncomingEvent(view: any): void;
     filterEvents(): void;

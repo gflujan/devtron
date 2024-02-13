@@ -1,8 +1,8 @@
-export function isUsingAsar(): any;
-export function isListeningForCrashEvents(): any;
-export function isListeningForUnresponsiveEvents(): any;
-export function isListeningForUncaughtExceptionEvents(): any;
-export function getCurrentElectronVersion(): any;
-export function getLatestElectronVersion(): any;
-export function fetchLatestVersion(): any;
+export function isUsingAsar(): Promise<any>;
+export function isListeningForCrashEvents(): Promise<any>;
+export function isListeningForUnresponsiveEvents(): Promise<any>;
+export function isListeningForUncaughtExceptionEvents(): Promise<any>;
+export function getCurrentElectronVersion(): Promise<any>;
+export function getLatestElectronVersion(): Promise<any>;
+export function fetchLatestVersion(): Promise<any>;
 //# sourceMappingURL=lint-helpers.d.ts.map

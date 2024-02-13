@@ -12,6 +12,15 @@
     // This compiler run should
     // only output d.ts files
     "emitDeclarationOnly": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": [
+      "es5",
+      "dom",
+      "es2015",
+      "es2015.collection"
+    ],
+    "module": "esnext",
     "moduleResolution": "node",
     // Types should go into this directory.
     // Removing this would place the .d.ts files
@@ -21,17 +30,21 @@
       "*": [
         "@types/*"
       ]
-    }
+    },
+    "sourceMap": true,
+    "strict": false,
+    "target": "es5"
   },
   "exclude": [
     "./.vscode/**/*",
     "./node_modules/**/*",
     "./test/**/*",
+    "@types/**/*"
   ],
   "include": [
     "./lib/**/*",
     "./out/**/*",
     "./static/**/*",
-    "api.js",
+    "api.ts",
   ]
 }
