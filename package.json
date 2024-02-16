@@ -6,7 +6,7 @@
   "main": "./api.js",
   "name": "devtron",
   "types": "@types/api.d.ts",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "bugs": {
     "url": "https://github.com/gflujan/devtron/issues"
   },
