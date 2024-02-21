@@ -50,15 +50,6 @@ exports.install = locationPath => {
     if (isRenderer || isBrowser) {
       console.log(`[${typeName}] Installing Devtron from ${devtronPath}`);
 
-      session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-        callback({
-          responseHeaders: {
-            ...details.responseHeaders,
-            'Content-Security-Policy': ["script-src 'nonce-bllr_tron'"],
-          },
-        });
-      });
-
       if (await session.defaultSession.getAllExtensions().devtron) {
         console.debug(`🚀--BLLR?: ${typeName} -> EXISTING DEVTRON FOUND`); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
         return true;
