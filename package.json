@@ -1,11 +1,10 @@
 {
-  "author": "Kevin Sawicki",
+  "author": "Gabriel Lujan (new) - Kevin Sawicki (original)",
   "description": "Electron DevTools Extension",
   "homepage": "https://github.com/gflujan/devtron#readme",
   "license": "MIT",
   "main": "./api.js",
   "name": "devtron",
-  "types": "@types/api.d.ts",
   "version": "2.0.0",
   "bugs": {
     "url": "https://github.com/gflujan/devtron/issues"
@@ -39,7 +38,6 @@
     "humanize-plus": "^1.8.1"
   },
   "devDependencies": {
-    "@types/node": "^20.11.17",
     "body-parser": "^1.15.0",
     "browserify": "^13.0.0",
     "chai": "^3.5.0",
@@ -52,7 +50,6 @@
     "mocha": "^2.4.5",
     "spectron": "~3.2.3",
     "standard": "^6.0.8",
-    "typescript": "^5.3.3",
     "watchify": "^3.7.0"
   }
 }
