@@ -2,12 +2,13 @@
 // ALL REQUIRED IMPORTS
 /* ========================================================================== */
 // Electron
-var electron = require('electron');
+const { app, session } = require('electron');
 // Packages
 // Context / Stores / Routers
 // Components / Classes / Controllers / Services
 // Assets / Constants
 // Interfaces / Models / Types
+const { type } = process;
 // Utils / Decorators / Methods / Mocks
 // Styles
 
@@ -18,20 +19,20 @@ console.debug('🚀--BLLR?: =================== START ===================');
 console.debug('🚀--BLLR?: PROCESS ->', process); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
 console.debug('🚀--BLLR?: ==================== END ====================');
 
-var ProcessTypes = {
+const ProcessTypes = {
   Browser: 'browser',
   Renderer: 'renderer',
 };
 
-var isBrowser = process.type === ProcessTypes.Browser;
-var isRenderer = process.type === ProcessTypes.Renderer;
-var typeName = process.type.toString().toUpperCase();
-var devtronPath = '';
+const isBrowser = type.toString().toLowerCase() === ProcessTypes.Browser;
+const isRenderer = type.toString().toLowerCase() === ProcessTypes.Renderer;
+const typeName = type.toString().toUpperCase();
+let devtronPath = '';
 
 /* ========================================================================== */
 // DEFINING THE `(UN-)INSTALLER` EXPORTS
 /* ========================================================================== */
-exports.install = function (locationPath) {
+exports.install = locationPath => {
   if (!locationPath) {
     throw new Error('Devtron must be supplied a path to its location.');
   }
@@ -39,28 +40,31 @@ exports.install = function (locationPath) {
   devtronPath = locationPath;
 
   console.debug('🚀--BLLR?: ELECTRON STUFF ->', {
-    devtronPath: devtronPath,
-    type: process.type,
-    session: electron.session,
-    // app: electron.app,
+    devtronDirnamePath: devtronPath,
+    type,
+    // session,
+    // app,
   });
 
-  electron.app.whenReady().then(async function () {
-    var { defaultSession } = electron.session;
-
-    console.debug('🚀--BLLR?: DEFAULT SESSION ->', {
-      defaultSession,
-    });
-
+  app.whenReady().then(async () => {
     if (isRenderer || isBrowser) {
       console.log(`[${typeName}] Installing Devtron from ${devtronPath}`);
 
-      if (await electron.session?.defaultSession?.getAllExtensions()?.devtron) {
+      session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+        callback({
+          responseHeaders: {
+            ...details.responseHeaders,
+            'Content-Security-Policy': ["script-src 'nonce-bllr_tron'"],
+          },
+        });
+      });
+
+      if (await session.defaultSession.getAllExtensions().devtron) {
         console.debug(`🚀--BLLR?: ${typeName} -> EXISTING DEVTRON FOUND`); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
         return true;
       }
 
-      await electron.session?.defaultSession?.loadExtension(devtronPath, { allowFileAccess: true });
+      await session.defaultSession.loadExtension(devtronPath, { allowFileAccess: true });
       return true;
     } else {
       throw new Error('Devtron can only be installed from an Electron process.');
@@ -68,11 +72,11 @@ exports.install = function (locationPath) {
   });
 };
 
-exports.uninstall = function () {
-  electron.app.whenReady().then(async () => {
+exports.uninstall = () => {
+  app.whenReady().then(async () => {
     if (isRenderer || isBrowser) {
       console.log(`[${typeName}] Uninstalling Devtron from ${devtronPath}`);
-      await electron.session?.defaultSession?.removeExtension('devtron');
+      await session.defaultSession.removeExtension('devtron');
       return true;
     } else {
       throw new Error('Devtron can only be uninstalled from an Electron process.');
