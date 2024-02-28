@@ -87,7 +87,7 @@ tbody:focus,
 }
 
 .table-scroller,
-.table-scroller-with-tabs  {
+.table-scroller-with-tabs {
   display: block;
   overflow: scroll;
   position: absolute;

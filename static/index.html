@@ -142,7 +142,7 @@
           <div class="table-description" data-field="tableDescription">
             This table shows all of the JavaScript files loaded via <code>require</code>
             starting from your application's main entry point.
-            <br>
+            <br />
             Click Load Graph to generate a require graph for the renderer process
             and the main process.
           </div>
@@ -174,7 +174,7 @@
           <div class="table-description" data-field="tableDescription">
             This table shows the event names and listeners currently registered
             on core Electron and node.js APIs.
-            <br>
+            <br />
             Click Load Listeners to populate it.
           </div>
         </div>
@@ -221,7 +221,7 @@
           <div class="table-description" data-field="tableDescription">
             This table shows the inter-process communication (IPC) events sent
             and received between the renderer process and the main process.
-            <br>
+            <br />
             Click Record to start monitoring and displaying IPC traffic.
           </div>
         </div>
@@ -260,7 +260,7 @@
           <div class="table-description" data-field="tableDescription">
             This pane shows errors and warnings from elements that do
             not meet accessibility standards.
-            <br>
+            <br />
             Click Audit App to inspect the running application.
           </div>
         </div>
@@ -325,7 +325,7 @@
                     It is important to listen for this event to report when it happens
                     and notify the user about what happened. View the <a href="http://electron.atom.io/docs/api/web-contents/#event-crashed"><code>webContents</code> docs</a>.
 
-                    <br><br>
+                    <br /><br />
                     Listen for this event by adding the following to the <code>webContents</code>:
                     <pre class="lint-code "><code class="language-javascript" data-field="crashedExample">myWindow.webContents.on('crashed', function () { })</code></pre>
                   </p>
@@ -344,7 +344,7 @@
                     event to report when it happens and to notify the user about what
                     has happened. View the <a href="http://electron.atom.io/docs/api/browser-window/#event-unresponsive"><code>BrowserWindow</code> docs</a>.
 
-                    <br><br>
+                    <br /><br />
                     Listen for this event by adding the following to the <code>BrowserWindow</code>:
                     <pre class="lint-code"><code class="language-javascript" data-field="unresponsiveExample">myWindow.on('unresponsive', function () { })</code></pre>
                   </p>
@@ -364,7 +364,7 @@
                     It is important to listen for this event to report when it happens
                     and possibly notify the user about what has happened. View the <a href="https://nodejs.org/api/process.html#process_event_uncaughtexception"><code>process</code> docs</a>.
 
-                    <br><br>
+                    <br /><br />
                     Listen for this event by adding the following to the main <code>process</code>:
                     <pre class="lint-code"><code class="language-javascript" data-field="uncaughtExample">process.on('uncaughtException', function () { })</code></pre>
                   </p>
@@ -376,7 +376,7 @@
           <div class="table-description" data-field="tableDescription">
             This pane shows warnings about potential issues or missing
             functionality in your application.
-            <br>
+            <br />
             Click Lint App to inspect the running application.
           </div>
         </div>
@@ -483,7 +483,9 @@
   webPreferences: {
     preload: path.join(__dirname, 'preload.js')
   }
-})</code></pre>
+})
+            </code>
+          </pre>
 
           <p>
             Then add the following to the <code>preload.js</code> script:
@@ -491,7 +493,7 @@
 
           <pre class="lint-code"><code class="language-javascript" data-field="devtronExample">window.__devtron = {require: require, process: process}</code></pre>
 
-          </p>
+          <p>
             You may want to guard the previous code block with a <code>NODE_ENV</code>
             check so that these variables are only exposed during development:
           </p>
