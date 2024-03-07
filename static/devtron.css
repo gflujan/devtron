@@ -179,10 +179,14 @@ tr.active .row-element-path a {
 
 .ipc-icon-sent {
   -webkit-mask-image: url(../vendor/entypo/arrow-up.svg);
+  background-color: orangered;
+  rotate: 90deg;
 }
 
 .ipc-icon-received {
   -webkit-mask-image: url(../vendor/entypo/arrow-down.svg);
+  background-color: green;
+  rotate: 90deg;
 }
 
 .ipc-icon-sync {
