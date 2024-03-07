@@ -96,7 +96,7 @@
     </template>
 
     <template id="ipc-view">
-      <div class="pane hidden" data-pane="ipc">
+      <div class="pane" data-pane="ipc">
         <header class="toolbar toolbar-header">
           <div class="toolbar-actions">
             <div class="btn-group pull-right">
@@ -141,7 +141,7 @@
             This table shows the inter-process communication (IPC) events sent
             and received between the renderer process and the main process.
             <br />
-            Click Record to start monitoring and displaying IPC traffic.
+            Click <span class="action-text">"Record"</span> to start monitoring and displaying IPC traffic.
           </div>
         </div>
       </div>
@@ -172,58 +172,19 @@
             This table shows the event names and listeners currently registered
             on core Electron and node.js APIs.
             <br />
-            Click Load Listeners to populate it.
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <template id="accessibility-view">
-      <div class="pane hidden" data-pane="accessibility">
-        <header class="toolbar toolbar-header">
-          <div class="toolbar-actions">
-            <div class="btn-group pull-right">
-              <button data-field="accessibilityButton" class="btn btn-default">
-                <span class="toolbar-icon toolbar-icon-cycle"></span>
-                Audit App
-              </button>
-              <button data-field="docsButton" class="btn btn-default" title="Open accessibility docs">
-                <span class="toolbar-icon toolbar-icon-book"></span>
-                Docs
-              </button>
-            </div>
-            <input data-field="searchBox" class="form-control search-box pull-right" type="text" placeholder="Search events">
-          </div>
-        </header>
-
-        <div class="table-scroller">
-          <table class="table-striped accessibility-table" tabindex="-1">
-            <thead>
-              <th>Status</th>
-              <th>Severity</th>
-              <th>Accessibility</th>
-            </thead>
-            <tbody data-field="accessibilityResultsTable" tabindex="-1">
-            </tbody>
-          </table>
-
-          <div class="table-description" data-field="tableDescription">
-            This pane shows errors and warnings from elements that do
-            not meet accessibility standards.
-            <br />
-            Click Audit App to inspect the running application.
+            Click <span class="action-text">"Load Listeners"</span> to populate it.
           </div>
         </div>
       </div>
     </template>
 
     <template id="modules-view">
-      <div class="pane" data-pane="graph">
+      <div class="pane hidden" data-pane="modules">
         <header class="toolbar toolbar-header">
           <div class="toolbar-actions">
             <button data-field="loadButton" class="btn btn-default pull-right">
               <span class="toolbar-icon toolbar-icon-cycle"></span>
-              Load Graph
+              Load Modules
             </button>
             <input data-field="searchBox" class="form-control search-box pull-right" type="text" placeholder="Search modules">
           </div>
@@ -265,8 +226,47 @@
             This table shows all of the JavaScript files loaded via <code>require</code>
             starting from your application's main entry point.
             <br />
-            Click Load Graph to generate a require graph for the renderer process
-            and the main process.
+            Click <span class="action-text">"Load Modules"</span> to generate a require graph
+            for the renderer process and the main process.
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template id="accessibility-view">
+      <div class="pane hidden" data-pane="accessibility">
+        <header class="toolbar toolbar-header">
+          <div class="toolbar-actions">
+            <div class="btn-group pull-right">
+              <button data-field="accessibilityButton" class="btn btn-default">
+                <span class="toolbar-icon toolbar-icon-cycle"></span>
+                Audit App
+              </button>
+              <button data-field="docsButton" class="btn btn-default" title="Open accessibility docs">
+                <span class="toolbar-icon toolbar-icon-book"></span>
+                Docs
+              </button>
+            </div>
+            <input data-field="searchBox" class="form-control search-box pull-right" type="text" placeholder="Search events">
+          </div>
+        </header>
+
+        <div class="table-scroller">
+          <table class="table-striped accessibility-table" tabindex="-1">
+            <thead>
+              <th>Status</th>
+              <th>Severity</th>
+              <th>Accessibility</th>
+            </thead>
+            <tbody data-field="accessibilityResultsTable" tabindex="-1">
+            </tbody>
+          </table>
+
+          <div class="table-description" data-field="tableDescription">
+            This pane shows errors and warnings from elements that do
+            not meet accessibility standards.
+            <br />
+            Click <span class="action-text">"Audit App"</span> to inspect the running application.
           </div>
         </div>
       </div>
@@ -382,7 +382,7 @@
             This pane shows warnings about potential issues or missing
             functionality in your application.
             <br />
-            Click Lint App to inspect the running application.
+            Click <span class="action-text">"Lint App"</span> to inspect the running application.
           </div>
         </div>
       </div>
@@ -437,25 +437,25 @@
     <template id="sidebar-view">
       <div class="pane pane-sm sidebar">
         <ul class="list-group">
-          <li class="list-group-item active" data-field="requireLink" data-pane-link="graph">
-            <div class="sidebar-icon sidebar-icon-graph"></div>
-            Require Graph
+          <li class="list-group-item active" data-field="ipcLink" data-pane-link="ipc">
+            <div class="sidebar-icon sidebar-icon-ipc"></div>
+            IPC
           </li>
           <li class="list-group-item" data-field="eventsLink" data-pane-link="listeners">
             <div class="sidebar-icon sidebar-icon-events"></div>
             Event Listeners
           </li>
-          <li class="list-group-item" data-field="ipcLink" data-pane-link="ipc">
-            <div class="sidebar-icon sidebar-icon-ipc"></div>
-            IPC
-          </li>
-          <li class="list-group-item" data-field="lintLink" data-pane-link="lint">
-            <div class="sidebar-icon sidebar-icon-lint"></div>
-            Lint
+          <li class="list-group-item" data-field="modulesLink" data-pane-link="modules">
+            <div class="sidebar-icon sidebar-icon-modules"></div>
+            Modules
           </li>
           <li class="list-group-item" data-field="accessibilityLink" data-pane-link="accessibility">
             <div class="sidebar-icon sidebar-icon-accessibility"></div>
             Accessibility
+          </li>
+          <li class="list-group-item" data-field="lintLink" data-pane-link="lint">
+            <div class="sidebar-icon sidebar-icon-lint"></div>
+            Lint
           </li>
           <li class="list-group-item" data-field="aboutLink" data-pane-link="about">
             <div class="sidebar-icon sidebar-icon-about"></div>

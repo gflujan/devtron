@@ -1,3 +1,8 @@
+.action-text {
+  color: lightcoral;
+  font-weight: 700;
+}
+
 .list-group-item:last-child,
 .list-group-item:first-child {
   border-radius: 0;
@@ -50,13 +55,13 @@
   width: 16px;
   height: 16px;
   margin-right: 2px;
-  background-color: #666;
+  background-color: #666666;
   float: left;
   -webkit-mask-image: url(../vendor/entypo/triangle-right.svg);
 }
 
 .active .disclosure-arrow {
-  border-left-color: #fff;
+  border-left-color: #ffffff;
 }
 
 .disclosure-arrow-expanded {
@@ -65,19 +70,19 @@
 
 .active .disclosure-arrow,
 .active .ipc-icon {
-  background-color: white;
+  background-color: #ffffff;
 }
 
 .table-striped tr:nth-child(even),
 .table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
 .table-striped > tbody > tr.active,
 .table-striped > tbody > tr.active .row-directory,
 .table-striped > tbody > tr.active .listener-count {
   background-color: #116cd6;
-  color: #fff;
+  color: #ffffff;
 }
 
 table:focus,
@@ -103,7 +108,7 @@ tbody:focus,
 
 .row-directory,
 .listener-count {
-  color: #bbb;
+  color: #bbbbbb;
   display: inline-block;
   margin-left: 5px;
 }
@@ -117,7 +122,7 @@ tbody:focus,
   width: 16px;
   height: 16px;
   margin-right: 10px;
-  background-color: black;
+  background-color: #000000;
   float: left;
 }
 
@@ -134,14 +139,14 @@ tbody:focus,
   cursor: pointer;
 }
 tr.active .row-element-path a {
-  color: white;
+  color: #ffffff;
 }
 
 .active .sidebar-icon {
-  background-color: white;
+  background-color: #ffffff;
 }
 
-.sidebar-icon-graph {
+.sidebar-icon-modules {
   -webkit-mask-image: url(../vendor/entypo/flow-tree.svg);
 }
 
@@ -173,19 +178,19 @@ tr.active .row-element-path a {
   width: 16px;
   height: 16px;
   margin-right: 10px;
-  background-color: #666;
+  background-color: #666666;
   float: left;
 }
 
 .ipc-icon-sent {
   -webkit-mask-image: url(../vendor/entypo/arrow-up.svg);
-  background-color: orangered;
+  background-color: #feaf2b;
   rotate: 90deg;
 }
 
 .ipc-icon-received {
   -webkit-mask-image: url(../vendor/entypo/arrow-down.svg);
-  background-color: green;
+  background-color: #009f7a;
   rotate: 90deg;
 }
 
@@ -196,13 +201,13 @@ tr.active .row-element-path a {
 .toolbar-icon {
   width: 16px;
   height: 16px;
-  background-color: #666;
+  background-color: #666666;
   margin-right: 5px;
   float: left;
 }
 
 .active .toolbar-icon {
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
 .toolbar-icon-record {
@@ -236,7 +241,7 @@ tr.active .row-element-path a {
 .toolbar-actions .active,
 .toolbar-actions .active:focus,
 .toolbar-actions .active:hover {
-  color: #fff;
+  color: #ffffff;
   border: 1px solid transparent;
   background-color: #6d6c6d;
   background-image: none;
@@ -302,7 +307,7 @@ code {
 .active pre span,
 .active code,
 .active code span {
-  color: white !important;
+  color: #ffffff !important;
 }
 
 .hljs {
@@ -340,7 +345,7 @@ code {
   text-align: center;
   font-size: 1.2em;
   font-weight: 300;
-  color: #bbb;
+  color: #bbbbbb;
 }
 
 .pane {
@@ -349,8 +354,8 @@ code {
 
 .lint-table .alert {
   border-radius: 0;
-  background: #fff;
-  color: #333;
+  background: #ffffff;
+  color: #333333;
 }
 
 .node-integration-view {

@@ -15,9 +15,9 @@ const { type } = process;
 /* ========================================================================== */
 // INTERNAL HELPERS, INTERFACES & VARS
 /* ========================================================================== */
-console.debug('🚀--BLLR?: =================== START ===================');
-console.debug('🚀--BLLR?: PROCESS ->', process); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
-console.debug('🚀--BLLR?: ==================== END ====================');
+// console.debug('🚀--BLLR?: =================== START ===================');
+// console.debug('🚀--BLLR?: PROCESS ->', process); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
+// console.debug('🚀--BLLR?: ==================== END ====================');
 
 const ProcessTypes = {
   Browser: 'browser',
@@ -39,23 +39,30 @@ exports.install = locationPath => {
 
   devtronPath = locationPath;
 
-  console.debug('🚀--BLLR?: ELECTRON STUFF ->', {
-    devtronDirnamePath: devtronPath,
-    type,
-    // session,
-    // app,
-  });
+  // console.debug('🚀--BLLR?: ELECTRON STUFF ->', {
+  //   devtronDirnamePath: devtronPath,
+  //   type,
+  //   // session,
+  //   // app,
+  // });
 
   app.whenReady().then(async () => {
     if (isRenderer || isBrowser) {
       console.log(`[${typeName}] Installing Devtron from ${devtronPath}`);
 
       if (await session.defaultSession.getAllExtensions().devtron) {
-        console.debug(`🚀--BLLR?: ${typeName} -> EXISTING DEVTRON FOUND`); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
+        // console.debug(`🚀--BLLR?: ${typeName} -> EXISTING DEVTRON FOUND`); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
         return true;
       }
 
-      await session.defaultSession.loadExtension(devtronPath, { allowFileAccess: true });
+      const loadedExtension = await session.defaultSession.loadExtension(devtronPath, {
+        allowFileAccess: true,
+      });
+
+      console.debug(`🚀--BLLR? -----------------------------------------------------🚀--BLLR?`);
+      console.debug(`🚀--BLLR? -> app.whenReady -> loadedExtension->`, loadedExtension);
+      console.debug(`🚀--BLLR? -----------------------------------------------------🚀--BLLR?`);
+
       return true;
     } else {
       throw new Error('Devtron can only be installed from an Electron process.');
