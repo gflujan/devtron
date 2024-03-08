@@ -59,9 +59,9 @@ exports.install = locationPath => {
         allowFileAccess: true,
       });
 
-      console.debug(`🚀--BLLR? -----------------------------------------------------🚀--BLLR?`);
-      console.debug(`🚀--BLLR? -> app.whenReady -> loadedExtension->`, loadedExtension);
-      console.debug(`🚀--BLLR? -----------------------------------------------------🚀--BLLR?`);
+      // console.debug(`🚀--BLLR? -----------------------------------------------------🚀--BLLR?`);
+      // console.debug(`🚀--BLLR? -> app.whenReady -> loadedExtension->`, loadedExtension);
+      // console.debug(`🚀--BLLR? -----------------------------------------------------🚀--BLLR?`);
 
       return true;
     } else {
