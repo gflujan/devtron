@@ -32,19 +32,20 @@ let devtronPath = '';
 /* ========================================================================== */
 // DEFINING THE `(UN-)INSTALLER` EXPORTS
 /* ========================================================================== */
-exports.install = locationPath => {
+exports.install = (locationPath, eventEmitters = {}) => {
   if (!locationPath) {
     throw new Error('Devtron must be supplied a path to its location.');
   }
 
   devtronPath = locationPath;
 
-  // console.debug('🚀--BLLR?: ELECTRON STUFF ->', {
-  //   devtronDirnamePath: devtronPath,
-  //   type,
-  //   // session,
-  //   // app,
-  // });
+  console.debug('🚀--BLLR?: ELECTRON STUFF ->', {
+    devtronPath,
+    type,
+    appDevtron: app,
+    eventEmitters,
+    // session,
+  });
 
   app.whenReady().then(async () => {
     if (isRenderer || isBrowser) {
@@ -54,6 +55,9 @@ exports.install = locationPath => {
         // console.debug(`🚀--BLLR?: ${typeName} -> EXISTING DEVTRON FOUND`); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
         return true;
       }
+
+      console.debug('[debug] Devtron: Loading extension & attaching custom emitters...');
+      process.bllr = eventEmitters;
 
       const loadedExtension = await session.defaultSession.loadExtension(devtronPath, {
         allowFileAccess: true,
