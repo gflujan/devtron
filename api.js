@@ -6,7 +6,7 @@ const { app, session } = require('electron');
 // Packages
 // Context / Stores / Routers
 // Components / Classes / Controllers / Services
-const EmitterView = require('./lib/emitter-view');
+const EventsView = require('./lib/events-view');
 // Assets / Constants
 // Interfaces / Models / Types
 const { type } = process;
@@ -85,7 +85,7 @@ exports.setProjectEmitters = (projectEmitters = {}) => {
     finalEmitters,
   });
 
-  EmitterView.setProjectEmitters({
+  EventsView.setProjectEmitters({
     hola: 'bllr',
   });
 };
