@@ -43,6 +43,7 @@ exports.install = filePath => {
   // });
 
   app.whenReady().then(async () => {
+    // TODO **[G]** :: start up a socket.io server here to able to emit when `setProjectEmitters` happens
     console.info(`[${typeName}] Beginning install of Devtron from "${devtronPath}"`, {
       isBrowser,
       isRenderer,
