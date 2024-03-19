@@ -74,6 +74,8 @@ const startSocketServer = () => {
         console.error(
           'Socket Server: No `projectEmittersStored` found, unable to handle request for `get-project-emitters`',
         );
+
+        callback(null);
       }
     });
 
