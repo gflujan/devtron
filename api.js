@@ -4,6 +4,8 @@
 // Electron
 const { app, session } = require('electron');
 // Packages
+const http = require('http');
+const socketIO = require('socket.io');
 // Context / Stores / Routers
 // Components / Classes / Controllers / Services
 const EventsView = require('./lib/events-view');
@@ -14,20 +16,79 @@ const { type } = process;
 // Styles
 
 /* ========================================================================== */
-// INTERNAL HELPERS, INTERFACES & VARS
+// HELPERS, INTERFACES & VARS
 /* ========================================================================== */
 const ProcessTypes = {
   Browser: 'BROWSER',
   Renderer: 'RENDERER',
 };
 
+const PORT = 21324;
+let devtronPath = '';
+let projectEmittersStored = null;
+let socketServer = null;
+
 const typeName = type.toString().toUpperCase();
 const isBrowser = typeName === ProcessTypes.Browser;
 const isRenderer = typeName === ProcessTypes.Renderer;
-let devtronPath = '';
+
+// TODO **[G]** :: Try to get this to work
+const removeCircularRefs = obj => {
+  const seen = new Map();
+
+  const recurse = currObj => {
+    seen.set(currObj, true);
+
+    Object.entries(currObj).forEach(([k, v]) => {
+      if (v === null || v === undefined || typeof v !== 'object') return;
+      if (seen.has(v)) delete currObj[k];
+      else recurse(v);
+    });
+  };
+
+  recurse(obj);
+};
+
+const startSocketServer = () => {
+  socketServer = http.createServer((req, res) => {
+    res.end('Socket Server is running');
+  });
+
+  const io = socketIO(socketServer);
+
+  io.on('connection', socket => {
+    console.info(`Socket Server: A user connected, id: ${socket.client.id}`);
+
+    socket.on('get-project-emitters', callback => {
+      if (projectEmittersStored) {
+        const numEmitters = Object.keys(projectEmittersStored).length || 0;
+
+        console.info(
+          `Socket Server: ${numEmitters} 'projectEmittersStored' found, sending response back in callback...`,
+        );
+
+        // TODO **[G]** :: if the remove circular helper doesn't work
+        // try just grabbing & sending `eventNames()` and `listeners()` from each emitter
+        callback(removeCircularRefs(projectEmittersStored));
+      } else {
+        console.error(
+          'Socket Server: No `projectEmittersStored` found, unable to handle request for `get-project-emitters`',
+        );
+      }
+    });
+
+    socket.on('disconnect', () => {
+      console.warn('Socket Server: A user disconnected');
+    });
+  });
+
+  socketServer.listen(PORT, () => {
+    console.info(`Socket Server: Running on port ${PORT}`);
+  });
+};
 
 /* ========================================================================== */
-// DEFINING THE `(UN-)INSTALLER` EXPORTS
+// DEFINING THE `DEVTRON API` EXPORTS
 /* ========================================================================== */
 exports.install = filePath => {
   if (!filePath) {
@@ -43,27 +104,6 @@ exports.install = filePath => {
   // });
 
   app.whenReady().then(async () => {
-    // TODO **[G]** :: start up a socket.io server here to able to emit when `setProjectEmitters` happens
-
-    /*
-      const http = require('http');
-      const socketIO = require('socket.io');
-      const server = http.createServer((req, res) => {
-        res.end('Socket.IO server is running');
-      });
-      const io = socketIO(server);
-      io.on('connection', (socket) => {
-        console.log('A user connected');
-        socket.on('disconnect', () => {
-          console.log('User disconnected');
-        });
-      });
-      const PORT = 3000;
-      server.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-      });
-    */
-
     console.info(`[${typeName}] Beginning install of Devtron from "${devtronPath}"`, {
       isBrowser,
       isRenderer,
@@ -83,32 +123,49 @@ exports.install = filePath => {
       //   devtronLoaded,
       // });
 
+      if (devtronLoaded) {
+        startSocketServer();
+      }
+
       return true;
     } else {
-      // TODO **[G]** :: Find the proper way to pass in this object with stuff
-      throw new Error('Devtron can only be installed from an Electron process.', {
+      const errorMessage = 'Devtron can only be installed from an Electron process.';
+
+      console.error(errorMessage, {
         type,
         isBrowser,
         isRenderer,
       });
+
+      throw new Error(errorMessage);
     }
   });
 };
 
 exports.setProjectEmitters = (projectEmitters = {}) => {
-  let finalEmitters = {
+  let emittersToBeStored = {
     appFromDevtron: app,
   };
 
-  finalEmitters = Object.assign(finalEmitters, projectEmitters);
+  emittersToBeStored = Object.assign(emittersToBeStored, projectEmitters);
+  const numEmitters = Object.keys(emittersToBeStored).length || 0;
 
-  console.info(`[${typeName}] Devtron: receiving & setting project emitters`, {
-    finalEmitters,
-  });
+  console.debug(
+    `[${typeName}] Devtron: receiving & storing project emitters, count: ${numEmitters}`,
+  );
 
-  EventsView.setProjectEmitters({
-    hola: 'bllr',
-  });
+  if (socketServer) {
+    projectEmittersStored = emittersToBeStored;
+
+    console.info(
+      'Devtron: Socket Server was found, storing the final emitters until the client requests them',
+      Object.keys(projectEmittersStored),
+    );
+  } else {
+    console.error(
+      'Devtron: Socket Server was NOT found, unable to store the final emitters for the client',
+    );
+  }
 };
 
 exports.uninstall = () => {
@@ -118,12 +175,15 @@ exports.uninstall = () => {
       await session.defaultSession.removeExtension('devtron');
       return true;
     } else {
-      // TODO **[G]** :: Find the proper way to pass in this object with stuff
-      throw new Error('Devtron can only be uninstalled from an Electron process.', {
+      const errorMessage = 'Devtron can only be uninstalled from an Electron process.';
+
+      console.error(errorMessage, {
         type,
         isBrowser,
         isRenderer,
       });
+
+      throw new Error(errorMessage);
     }
   });
 };
