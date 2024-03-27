@@ -19,15 +19,15 @@ const utils = require('./lib/utils');
 /* ========================================================================== */
 // HELPERS, INTERFACES & VARS
 /* ========================================================================== */
-const ProcessTypes = {
-  Browser: 'BROWSER',
-  Renderer: 'RENDERER',
-};
-
 const PORT = 21324;
 let devtronPath = '';
 let projectEmittersStored = null;
 let socketServer = null;
+
+const ProcessTypes = {
+  Browser: 'BROWSER',
+  Renderer: 'RENDERER',
+};
 
 const typeName = type.toString().toUpperCase();
 const isBrowser = typeName === ProcessTypes.Browser;
@@ -43,33 +43,37 @@ const startSocketServer = () => {
   io.on('connection', socket => {
     console.info(`Devtron: Socket Server: A user connected, id: ${socket.client.id}`);
 
-    socket.on('get-project-listeners', callback => {
-      if (projectEmittersStored) {
-        const emitterNames = Object.keys(projectEmittersStored);
-        const numEmitters = emitterNames.length || 0;
+    socket.on('get-project-listeners', (value, callback) => {
+      if (value === 'devtron-event-helpers') {
+        if (projectEmittersStored) {
+          const emitterNames = Object.keys(projectEmittersStored);
+          const numEmitters = emitterNames.length || 0;
 
-        if (numEmitters > 0) {
-          console.info(
-            `Devtron: Socket Server: ${numEmitters} 'projectEmittersStored' found, sending response back in callback...`,
-            { emitterNames },
-          );
+          if (numEmitters > 0) {
+            console.info(
+              `Devtron: Socket Server: ${numEmitters} 'projectEmittersStored' found, sending response back in callback...`,
+              { emitterNames },
+            );
 
-          const mappedEmitters = utils.mapEmitterListeners(projectEmittersStored);
-          callback(mappedEmitters);
+            const mappedEmitters = utils.mapEmitterListeners(projectEmittersStored);
+            callback(mappedEmitters);
+          } else {
+            console.info(
+              'Devtron: Socket Server: No `projectEmittersStored` found, sending `null` response back in callback...',
+              { emitterNames },
+            );
+
+            callback(null);
+          }
         } else {
-          console.info(
-            'Devtron: Socket Server: No `projectEmittersStored` found, sending `null` response back in callback...',
-            { emitterNames },
+          console.error(
+            'Devtron: Socket Server: No `projectEmittersStored` found, unable to handle request for `get-project-emitters`',
           );
 
           callback(null);
         }
       } else {
-        console.error(
-          'Devtron: Socket Server: No `projectEmittersStored` found, unable to handle request for `get-project-emitters`',
-        );
-
-        callback(null);
+        // no proper `ack` received log some warning
       }
     });
 
