@@ -13,6 +13,7 @@ const EventsView = require('./lib/events-view');
 // Interfaces / Models / Types
 const { type } = process;
 // Utils / Decorators / Methods / Mocks
+const utils = require('./lib/utils');
 // Styles
 
 /* ========================================================================== */
@@ -32,47 +33,40 @@ const typeName = type.toString().toUpperCase();
 const isBrowser = typeName === ProcessTypes.Browser;
 const isRenderer = typeName === ProcessTypes.Renderer;
 
-// TODO **[G]** :: Try to get this to work
-const removeCircularRefs = obj => {
-  const seen = new Map();
-
-  const recurse = currObj => {
-    seen.set(currObj, true);
-
-    Object.entries(currObj).forEach(([k, v]) => {
-      if (v === null || v === undefined || typeof v !== 'object') return;
-      if (seen.has(v)) delete currObj[k];
-      else recurse(v);
-    });
-  };
-
-  recurse(obj);
-};
-
 const startSocketServer = () => {
   socketServer = http.createServer((req, res) => {
-    res.end('Socket Server is running');
+    res.end('Devtron: Socket Server is running');
   });
 
   const io = socketIO(socketServer);
 
   io.on('connection', socket => {
-    console.info(`Socket Server: A user connected, id: ${socket.client.id}`);
+    console.info(`Devtron: Socket Server: A user connected, id: ${socket.client.id}`);
 
-    socket.on('get-project-emitters', callback => {
+    socket.on('get-project-listeners', callback => {
       if (projectEmittersStored) {
-        const numEmitters = Object.keys(projectEmittersStored).length || 0;
+        const emitterNames = Object.keys(projectEmittersStored);
+        const numEmitters = emitterNames.length || 0;
 
-        console.info(
-          `Socket Server: ${numEmitters} 'projectEmittersStored' found, sending response back in callback...`,
-        );
+        if (numEmitters > 0) {
+          console.info(
+            `Devtron: Socket Server: ${numEmitters} 'projectEmittersStored' found, sending response back in callback...`,
+            { emitterNames },
+          );
 
-        // TODO **[G]** :: if the remove circular helper doesn't work
-        // try just grabbing & sending `eventNames()` and `listeners()` from each emitter
-        callback(removeCircularRefs(projectEmittersStored));
+          const mappedEmitters = utils.mapEmitterListeners(projectEmittersStored);
+          callback(mappedEmitters);
+        } else {
+          console.info(
+            'Devtron: Socket Server: No `projectEmittersStored` found, sending `null` response back in callback...',
+            { emitterNames },
+          );
+
+          callback(null);
+        }
       } else {
         console.error(
-          'Socket Server: No `projectEmittersStored` found, unable to handle request for `get-project-emitters`',
+          'Devtron: Socket Server: No `projectEmittersStored` found, unable to handle request for `get-project-emitters`',
         );
 
         callback(null);
@@ -80,12 +74,12 @@ const startSocketServer = () => {
     });
 
     socket.on('disconnect', () => {
-      console.warn('Socket Server: A user disconnected');
+      console.warn('Devtron: Socket Server: A user disconnected');
     });
   });
 
   socketServer.listen(PORT, () => {
-    console.info(`Socket Server: Running on port ${PORT}`);
+    console.info(`Devtron: Socket Server: Running on port ${PORT}`);
   });
 };
 
@@ -152,7 +146,7 @@ exports.setProjectEmitters = (projectEmitters = {}) => {
   emittersToBeStored = Object.assign(emittersToBeStored, projectEmitters);
   const numEmitters = Object.keys(emittersToBeStored).length || 0;
 
-  console.debug(
+  console.info(
     `[${typeName}] Devtron: receiving & storing project emitters, count: ${numEmitters}`,
   );
 
@@ -160,12 +154,12 @@ exports.setProjectEmitters = (projectEmitters = {}) => {
     projectEmittersStored = emittersToBeStored;
 
     console.info(
-      'Devtron: Socket Server was found, storing the final emitters until the client requests them',
+      'Devtron: Socket Server exists, storing the emitters until the client requests them',
       Object.keys(projectEmittersStored),
     );
   } else {
-    console.error(
-      'Devtron: Socket Server was NOT found, unable to store the final emitters for the client',
+    console.warn(
+      'Devtron: Socket Server does NOT exist, unable to store the emitters for the client',
     );
   }
 };
