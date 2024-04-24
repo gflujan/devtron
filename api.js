@@ -45,8 +45,8 @@ const startSocketServer = () => {
       timestamp: new Date().toISOString(),
     });
 
-    socket.on('get-project-listeners', (value, callback) => {
-      if (value === 'devtron-event-helpers') {
+    socket.on('get-project-listeners', (ackValue, callback) => {
+      if (ackValue === 'devtron-event-helpers') {
         if (projectEmittersStored) {
           const emitterNames = Object.keys(projectEmittersStored);
           const numEmitters = emitterNames.length || 0;
@@ -57,7 +57,7 @@ const startSocketServer = () => {
               { timestamp: new Date().toISOString(), emitterNames },
             );
 
-            const mappedEmitters = utils.mapEmitterListeners(projectEmittersStored);
+            const mappedEmitters = utils.mapStoredEmitterListeners(projectEmittersStored);
             callback(mappedEmitters);
           } else {
             console.info(
@@ -76,17 +76,19 @@ const startSocketServer = () => {
           callback(null);
         }
       } else {
-        // no proper `ack` received log some warning
+        console.warn(
+          `Devtron: Socket Server: No proper 'ackValue' received, unable to handle request for: ${ackValue}`,
+        );
       }
     });
 
     socket.on('log-this', data => {
-      console.info('🚀--BLLR?: ===================[ START ]===================');
-      console.info(
-        `🚀--BLLR?: LOGGED DATA FROM SOCKET SERVER -> ${new Date().toISOString()} ->`,
+      console.info('===================[ START ]===================');
+      console.info('Logged data from socket server ->', {
+        timestamp: new Date().toISOString(),
         data,
-      ); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
-      console.info('🚀--BLLR?: ====================[ END ]====================');
+      });
+      console.info('====================[ END ]====================');
     });
 
     socket.on('disconnect', () => {
