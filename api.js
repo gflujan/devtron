@@ -45,6 +45,29 @@ const startSocketServer = () => {
       timestamp: new Date().toISOString(),
     });
 
+    socket.on('get-main-module', (ackValue, callback) => {
+      if (ackValue === 'bllr') {
+        const mainModule = process.mainModule;
+        const resourcesPath = process.resourcesPath;
+
+        console.info('Devtron: Socket Server: Received request for `get-main-module`', {
+          timestamp: new Date().toISOString(),
+          appName: app.getName(),
+          mainModule,
+          resourcesPath,
+        });
+
+        callback({ mainModule, resourcesPath });
+      } else {
+        console.warn(
+          'Devtron: Socket Server: Received request for `get-main-module`, but `ackValue` is unknown',
+          { timestamp: new Date().toISOString() },
+        );
+
+        callback(null);
+      }
+    });
+
     socket.on('get-project-listeners', (ackValue, callback) => {
       if (ackValue === 'devtron-event-helpers') {
         if (projectEmittersStored) {
