@@ -45,23 +45,46 @@ const startSocketServer = () => {
       timestamp: new Date().toISOString(),
     });
 
+    socket.on('get-app-name', (ackValue, callback) => {
+      const timestamp = new Date().toISOString();
+
+      if (ackValue === 'renderer-graph') {
+        const appName = app.getName();
+
+        console.info('Devtron: Socket Server: Received request for `get-app-name`', {
+          timestamp,
+          appName: appName,
+        });
+
+        callback(appName);
+      } else {
+        console.warn(
+          'Devtron: Socket Server: Received request for `get-app-name`, but `ackValue` is unknown',
+          { timestamp },
+        );
+      }
+    });
+
     socket.on('get-main-module', (ackValue, callback) => {
+      const timestamp = new Date().toISOString();
+
       if (ackValue === 'bllr') {
+        const appName = app.getName();
         const mainModule = process.mainModule;
         const resourcesPath = process.resourcesPath;
 
         console.info('Devtron: Socket Server: Received request for `get-main-module`', {
-          timestamp: new Date().toISOString(),
-          appName: app.getName(),
+          timestamp,
+          appName,
           mainModule,
           resourcesPath,
         });
 
-        callback({ mainModule, resourcesPath });
+        callback({ appName, processMainModule, resourcesPath });
       } else {
         console.warn(
           'Devtron: Socket Server: Received request for `get-main-module`, but `ackValue` is unknown',
-          { timestamp: new Date().toISOString() },
+          { timestamp },
         );
 
         callback(null);
@@ -69,6 +92,8 @@ const startSocketServer = () => {
     });
 
     socket.on('get-project-listeners', (ackValue, callback) => {
+      const timestamp = new Date().toISOString();
+
       if (ackValue === 'devtron-event-helpers') {
         if (projectEmittersStored) {
           const emitterNames = Object.keys(projectEmittersStored);
@@ -77,7 +102,7 @@ const startSocketServer = () => {
           if (numEmitters > 0) {
             console.info(
               `Devtron: Socket Server: ${numEmitters} 'projectEmittersStored' found, sending response back in callback...`,
-              { timestamp: new Date().toISOString(), emitterNames },
+              { timestamp, emitterNames },
             );
 
             const mappedEmitters = utils.mapStoredEmitterListeners(projectEmittersStored);
@@ -85,7 +110,7 @@ const startSocketServer = () => {
           } else {
             console.info(
               'Devtron: Socket Server: No `projectEmittersStored` found, sending `null` response back in callback...',
-              { timestamp: new Date().toISOString(), emitterNames },
+              { timestamp, emitterNames },
             );
 
             callback(null);
@@ -93,7 +118,7 @@ const startSocketServer = () => {
         } else {
           console.error(
             'Devtron: Socket Server: No `projectEmittersStored` found, unable to handle request for `get-project-emitters`',
-            { timestamp: new Date().toISOString() },
+            { timestamp },
           );
 
           callback(null);
