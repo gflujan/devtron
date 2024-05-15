@@ -33,6 +33,10 @@ const typeName = type.toString().toUpperCase();
 const isBrowser = typeName === ProcessTypes.Browser;
 const isRenderer = typeName === ProcessTypes.Renderer;
 
+const timestamp = () => {
+  return new Date().toISOString();
+};
+
 const startSocketServer = () => {
   socketServer = http.createServer((req, res) => {
     res.end('Devtron: Socket Server is running');
@@ -42,17 +46,31 @@ const startSocketServer = () => {
 
   io.on('connection', socket => {
     console.info(`Devtron: Socket Server: A user connected, id: ${socket.client.id}`, {
-      timestamp: new Date().toISOString(),
+      timestamp: timestamp(),
+    });
+
+    socket.on('log-this', data => {
+      console.info('===================[ START ]===================');
+      console.info('Logged data from socket server ->', {
+        timestamp: timestamp(),
+        data,
+      });
+      console.info('====================[ END ]====================');
+    });
+
+    socket.on('disconnect', () => {
+      console.warn('Devtron: Socket Server: A user disconnected', {
+        timestamp: timestamp(),
+        id: socket.client.id,
+      });
     });
 
     socket.on('get-app-name', (ackValue, callback) => {
-      const timestamp = new Date().toISOString();
-
       if (ackValue === 'renderer-graph') {
         const appName = app.getName();
 
         console.info('Devtron: Socket Server: Received request for `get-app-name`', {
-          timestamp,
+          timestamp: timestamp(),
           appName: appName,
         });
 
@@ -60,21 +78,19 @@ const startSocketServer = () => {
       } else {
         console.warn(
           'Devtron: Socket Server: Received request for `get-app-name`, but `ackValue` is unknown',
-          { timestamp },
+          { timestamp: timestamp() },
         );
       }
     });
 
     socket.on('get-main-module', (ackValue, callback) => {
-      const timestamp = new Date().toISOString();
-
       if (ackValue === 'bllr') {
         const appName = app.getName();
         const mainModule = process.mainModule;
         const resourcesPath = process.resourcesPath;
 
         console.info('Devtron: Socket Server: Received request for `get-main-module`', {
-          timestamp,
+          timestamp: timestamp(),
           appName,
           mainModule,
           resourcesPath,
@@ -84,7 +100,7 @@ const startSocketServer = () => {
       } else {
         console.warn(
           'Devtron: Socket Server: Received request for `get-main-module`, but `ackValue` is unknown',
-          { timestamp },
+          { timestamp: timestamp() },
         );
 
         callback(null);
@@ -92,8 +108,6 @@ const startSocketServer = () => {
     });
 
     socket.on('get-project-listeners', (ackValue, callback) => {
-      const timestamp = new Date().toISOString();
-
       if (ackValue === 'devtron-event-helpers') {
         if (projectEmittersStored) {
           const emitterNames = Object.keys(projectEmittersStored);
@@ -102,7 +116,7 @@ const startSocketServer = () => {
           if (numEmitters > 0) {
             console.info(
               `Devtron: Socket Server: ${numEmitters} 'projectEmittersStored' found, sending response back in callback...`,
-              { timestamp, emitterNames },
+              { timestamp: timestamp(), emitterNames },
             );
 
             const mappedEmitters = utils.mapStoredEmitterListeners(projectEmittersStored);
@@ -110,7 +124,7 @@ const startSocketServer = () => {
           } else {
             console.info(
               'Devtron: Socket Server: No `projectEmittersStored` found, sending `null` response back in callback...',
-              { timestamp, emitterNames },
+              { timestamp: timestamp(), emitterNames },
             );
 
             callback(null);
@@ -118,7 +132,7 @@ const startSocketServer = () => {
         } else {
           console.error(
             'Devtron: Socket Server: No `projectEmittersStored` found, unable to handle request for `get-project-emitters`',
-            { timestamp },
+            { timestamp: timestamp() },
           );
 
           callback(null);
@@ -129,26 +143,11 @@ const startSocketServer = () => {
         );
       }
     });
-
-    socket.on('log-this', data => {
-      console.info('===================[ START ]===================');
-      console.info('Logged data from socket server ->', {
-        timestamp: new Date().toISOString(),
-        data,
-      });
-      console.info('====================[ END ]====================');
-    });
-
-    socket.on('disconnect', () => {
-      console.warn('Devtron: Socket Server: A user disconnected', {
-        timestamp: new Date().toISOString(),
-      });
-    });
   });
 
   socketServer.listen(PORT, () => {
     console.info(`Devtron: Socket Server: Running on port ${PORT}`, {
-      timestamp: new Date().toISOString(),
+      timestamp: timestamp(),
     });
   });
 };
@@ -165,7 +164,7 @@ exports.install = filePath => {
 
   app.whenReady().then(async () => {
     console.info(`[${typeName}] Beginning install of Devtron from "${devtronPath}"`, {
-      timestamp: new Date().toISOString(),
+      timestamp: timestamp(),
       isBrowser,
       isRenderer,
     });
@@ -173,7 +172,7 @@ exports.install = filePath => {
     if (isRenderer || isBrowser) {
       if (await session.defaultSession.getAllExtensions().devtron) {
         console.info(`[${typeName}] Existing Devtron Found. Doing nothing.`, {
-          timestamp: new Date().toISOString(),
+          timestamp: timestamp(),
         });
 
         return true;
@@ -192,7 +191,7 @@ exports.install = filePath => {
       const errorMessage = 'Devtron can only be installed from an Electron process.';
 
       console.error(errorMessage, {
-        timestamp: new Date().toISOString(),
+        timestamp: timestamp(),
         type,
         isBrowser,
         isRenderer,
@@ -213,7 +212,7 @@ exports.setProjectEmitters = (projectEmitters = {}) => {
 
   console.info(
     `[${typeName}] Devtron: receiving & storing project emitters, count: ${numEmitters}`,
-    { timestamp: new Date().toISOString() },
+    { timestamp: timestamp() },
   );
 
   if (socketServer) {
@@ -221,12 +220,12 @@ exports.setProjectEmitters = (projectEmitters = {}) => {
 
     console.info(
       'Devtron: Socket Server exists, storing the emitters until the client requests them',
-      { timestamp: new Date().toISOString(), emitterNames: Object.keys(projectEmittersStored) },
+      { timestamp: timestamp(), emitterNames: Object.keys(projectEmittersStored) },
     );
   } else {
     console.warn(
       'Devtron: Socket Server does NOT exist, unable to store the emitters for the client',
-      { timestamp: new Date().toISOString() },
+      { timestamp: timestamp() },
     );
   }
 };
@@ -235,7 +234,7 @@ exports.uninstall = () => {
   app.whenReady().then(async () => {
     if (isRenderer || isBrowser) {
       console.info(`[${typeName}] Uninstalling Devtron from "${devtronPath}"`, {
-        timestamp: new Date().toISOString(),
+        timestamp: timestamp(),
       });
 
       await session.defaultSession.removeExtension('devtron');
@@ -244,7 +243,7 @@ exports.uninstall = () => {
       const errorMessage = 'Devtron can only be uninstalled from an Electron process.';
 
       console.error(errorMessage, {
-        timestamp: new Date().toISOString(),
+        timestamp: timestamp(),
         type,
         isBrowser,
         isRenderer,
