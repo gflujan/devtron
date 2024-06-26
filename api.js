@@ -155,7 +155,7 @@ const startSocketServer = () => {
 /* ========================================================================== */
 // DEFINING THE `DEVTRON API` EXPORTS
 /* ========================================================================== */
-exports.install = filePath => {
+export const install = filePath => {
   if (!filePath) {
     throw new Error('Devtron must be supplied a path to its file location');
   }
@@ -202,7 +202,7 @@ exports.install = filePath => {
   });
 };
 
-exports.setProjectEmitters = (projectEmitters = {}) => {
+export const setProjectEmitters = (projectEmitters = {}) => {
   let emittersToBeStored = {
     ...(ipcRenderer ? { ipcRenderer } : {}),
   };
@@ -230,7 +230,7 @@ exports.setProjectEmitters = (projectEmitters = {}) => {
   }
 };
 
-exports.uninstall = () => {
+export const uninstall = () => {
   app.whenReady().then(async () => {
     if (isRenderer || isBrowser) {
       console.info(`[${typeName}] Uninstalling Devtron from "${devtronPath}"`, {
@@ -254,4 +254,4 @@ exports.uninstall = () => {
   });
 };
 
-exports.path = devtronPath;
+export const path = devtronPath;
