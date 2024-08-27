@@ -27,11 +27,11 @@ npm install --save-dev devtron
 Then execute the following from the Console tab of your running Electron app's developer tools:
 
 ```js
-// ES6 (?) 
+// ES6 (?)
 import devtron from 'devtron';
 devtron.install();
 
-// ES5 (?) 
+// ES5 (?)
 require('devtron').install();
 ```
 
@@ -84,7 +84,7 @@ To make developing and debugging the extension easier, you can run it in a Chrom
 
 - Then open `/Users/me/devtron/static/index.html` in Chrome
 - The page there will talk remotely to the running Electron app so you'll be able to fully interact with each pane with real data.
-  
+
 ### Additional Notes
 
 - `require('devtron').install()` cannot be called before the `ready` event of the `app` module has been emitted.
@@ -93,7 +93,7 @@ To make developing and debugging the extension easier, you can run it in a Chrom
 
 When using webpack, you may experience issues resolving `__dirname`. In accordance with the [docs](https://webpack.js.org/configuration/node/#node-__dirname), `__dirname` is resolved at runtime on the compiled file.
 
-You have to two solutions: 
+You have to two solutions:
  1. Remove `devtron` from Webpack bundle with `config.externals`
  2. Copy `devtron` files to the same folder as your compiled main process file
 
@@ -134,7 +134,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const copyFiles = [
   {
     from: path.resolve(__dirname, 'node_modules/devtron/manifest.json')
-  }, 
+  },
   {
     from: path.resolve(__dirname, 'node_modules/devtron/out/browser-globals.js'),
     to: path.resolve(__dirname, 'out'),
@@ -158,3 +158,7 @@ existing tests. This project uses the [standard JavaScript style](http://standar
 ## License
 
 MIT
+
+### Possible typings already created
+
+https://www.npmjs.com/package/type-devtron
