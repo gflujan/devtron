@@ -8,13 +8,19 @@ const http = require('http');
 const socketIO = require('socket.io');
 // Context / Stores / Routers
 // Components / Classes / Controllers / Services
-const EventsView = require('./lib/events-view');
 // Assets / Constants
 // Interfaces / Models / Types
 const { type } = process;
 // Utils / Decorators / Methods / Mocks
-const utils = require('./lib/utils');
+const utils = require(`${__dirname.replace(
+  'front-desk-station-app/main/dist',
+  'devtron',
+)}/lib/utils`);
 // Styles
+
+// console.error('🚀--BLLR?: ===================[ START ]===================');
+// console.error('🚀--BLLR?: WHAT IS DIRNAME? ->', __dirname); // TODO **[G]** :: 🚀--BLLR?: REMOVE ME!!!
+// console.error('🚀--BLLR?: ====================[ END ]====================');
 
 /* ========================================================================== */
 // HELPERS, INTERFACES & VARS
