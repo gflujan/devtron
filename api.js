@@ -161,6 +161,9 @@ const startSocketServer = () => {
 /* ========================================================================== */
 // DEFINING THE `DEVTRON API` EXPORTS
 /* ========================================================================== */
+// TODO **[G]** :: FDS needs some sort of `Promise` to handle the `setProjectEmitters` race condition
+// TODO **[G]** :: but is/would Monarch be okay with that kind of setup?
+// TODO **[G]** :: maybe do the `fs` paradigm of offering one version that's `Promise` based & another that's linear/`sync` based?
 export const install = filePath => {
   if (!filePath) {
     throw new Error('Devtron must be supplied a path to its file location');
@@ -184,15 +187,27 @@ export const install = filePath => {
         return true;
       }
 
+      console.info(`[${typeName}] Devtron: attempting to load as an extension...`, {
+        hasLoadExtension: Boolean(session.defaultSession.loadExtension),
+      });
+
       const devtronLoaded = await session.defaultSession.loadExtension(devtronPath, {
         allowFileAccess: true,
       });
 
       if (devtronLoaded) {
+        console.info(
+          `[${typeName}] Devtron: was successfully loaded as an extension, starting the socket server...`,
+        );
+
         startSocketServer();
+      } else {
+        console.warn(
+          `[${typeName}] Devtron: DID NOT successfully load as an extension, NO socket server was started!`,
+        );
       }
 
-      return true;
+      // return true;
     } else {
       const errorMessage = 'Devtron can only be installed from an Electron process.';
 
